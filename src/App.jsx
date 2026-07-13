@@ -1,24 +1,24 @@
 import { useState } from "react";
-import "./App.css";
 
 import { ToastContainer, Bounce } from "react-toastify";
 
-import Password from "./formElements/generated-password/Password.jsx";
-import PasswordRange from "./formElements/password-range/PasswordRange.jsx";
-import UpperCaseCheck from "./formElements/checkBoxes/UpperCaseCheck.jsx";
-import LowerCaseCheck from "./formElements/checkBoxes/LowerCaseCheck.jsx";
-import NumberCheck from "./formElements/checkBoxes/NumberCheck.jsx";
-import CharactersCheck from "./formElements/checkBoxes/CharactersCheck.jsx";
-import Submit from "./formElements/submit/Submit.jsx";
-import ShowHide from "./formElements/show-hide-button/ShowHide.jsx";
-import ResetButton from "./formElements/resetButton/resetButton.jsx";
-import CopyButton from "./formElements/copyButton/CopyButton.jsx";
+import Password from "./components/generated-password/Password";
+import PasswordRange from "./components/password-range/PasswordRange";
+import UpperCaseCheck from "./components/checkBoxes/UpperCaseCheck";
+import LowerCaseCheck from "./components/checkBoxes/LowerCaseCheck";
+import NumberCheck from "./components/checkBoxes/NumberCheck";
+import CharactersCheck from "./components/checkBoxes/CharactersCheck";
+import Submit from "./components/submit/Submit.jsx";
+import ShowHide from "./components/show-hide-button/ShowHide";
+import ResetButton from "./components/resetButton/resetButton";
+import CopyButton from "./components/copyButton/CopyButton";
 
-import UseFormSubmit from "./controllers/submitController/UseFormSubmit.js";
-import UseToggle from "./controllers/toggleController/UseToggle.js";
+import UseFormSubmit from "./hooks/UseFormSubmit";
+import UseToggle from "./hooks/UseToggle";
+import Entropy from "./components/entropy/Entropy.jsx";
+import UseCalculateEntrophy from "./hooks/UseCalculateEntrophy";
 
 function App() {
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [displayButton, setDisplayButton] = useState(false);
   const [range, setRange] = useState(4);
@@ -30,12 +30,13 @@ function App() {
     char: false,
   });
 
+  const { entrophy } = UseCalculateEntrophy({ formData, range });
+
   const { handleSubmit } = UseFormSubmit({
     range,
     setFormData,
     formData,
     setDisplayButton,
-    setLoading,
   });
 
   const { showHide } = UseToggle({ setShowPassword });
@@ -48,42 +49,21 @@ function App() {
       >
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <Password showPassword={showPassword} formData={formData} />
-          <PasswordRange loading={loading} range={range} setRange={setRange} />
-          <UpperCaseCheck
-            loading={loading}
-            formData={formData}
-            setFormData={setFormData}
-          />
-          <LowerCaseCheck
-            loading={loading}
-            formData={formData}
-            setFormData={setFormData}
-          />
-          <NumberCheck
-            loading={loading}
-            formData={formData}
-            setFormData={setFormData}
-          />
-          <CharactersCheck
-            loading={loading}
-            formData={formData}
-            setFormData={setFormData}
-          />
-          <Submit loading={loading} />
+          <PasswordRange range={range} setRange={setRange} />
+          <UpperCaseCheck formData={formData} setFormData={setFormData} />
+          <LowerCaseCheck formData={formData} setFormData={setFormData} />
+          <NumberCheck formData={formData} setFormData={setFormData} />
+          <CharactersCheck formData={formData} setFormData={setFormData} />
+          <Entrophy entrophy={entrophy} />
+          <Submit />
         </form>
         <ShowHide
-          loading={loading}
           displayButton={displayButton}
           showHide={showHide}
           showPassword={showPassword}
         />
-        <CopyButton
-          formData={formData}
-          displayButton={displayButton}
-          loading={loading}
-        />
+        <CopyButton formData={formData} displayButton={displayButton} />
         <ResetButton
-          loading={loading}
           setFormData={setFormData}
           setRange={setRange}
           setShowPassword={setShowPassword}
